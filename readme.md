@@ -3,8 +3,8 @@
 This is a React + TypeScript project for managing customers and invoices. It uses Vite for fast development, Tailwind CSS for styling, and includes custom hooks and components for state management and form handling.
 
 ## Features
-- Customer management (add, edit, list)
-- Invoice management (add, edit, list)
+- Customer management 
+- Invoice management 
 - Multi-step forms for customer details
 - Quick actions for efficient workflow
 - State management with custom hooks
