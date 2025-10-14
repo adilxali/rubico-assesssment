@@ -7,15 +7,15 @@ This is a React + TypeScript project for managing customers and invoices. It use
 - Invoice management 
 - Multi-step forms for customer details
 - Quick actions for efficient workflow
-- State management with custom hooks
-- Form validation
+- State management with Zustand
+- Form validation with Zod
 
 ## Tech Stack
 - [React](https://react.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Vite](https://vitejs.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Zustand] (https://zustand-demo.pmnd.rs/)
+- [Zustand](https://zustand-demo.pmnd.rs/)
 
 ## Getting Started
 
