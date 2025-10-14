@@ -15,6 +15,7 @@ This is a React + TypeScript project for managing customers and invoices. It use
 - [TypeScript](https://www.typescriptlang.org/)
 - [Vite](https://vitejs.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
+- [Zustand] (https://zustand-demo.pmnd.rs/)
 
 ## Getting Started
 
