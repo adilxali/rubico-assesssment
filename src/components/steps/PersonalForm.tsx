@@ -56,7 +56,7 @@ export default function PersonalForm({
                 type="tel"
                 {...personalForm.register('phone')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#274268] focus:border-transparent"
-                placeholder="+1 (555) 123-4567"
+                placeholder="+91XXXXXXXXXX"
               />
               {personalForm.formState.errors.phone && (
                 <p className="mt-1 text-sm text-red-600">{personalForm.formState.errors.phone.message}</p>

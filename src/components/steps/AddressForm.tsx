@@ -44,7 +44,7 @@ export default function AddressForm({
                   type="text"
                   {...addressForm.register('billingAddress.city')}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#274268] focus:border-transparent"
-                  placeholder="New York"
+                  placeholder="Dehradun"
                 />
                 {addressForm.formState.errors.billingAddress?.city && (
                   <p className="mt-1 text-sm text-red-600">{addressForm.formState.errors.billingAddress.city.message}</p>
@@ -56,7 +56,7 @@ export default function AddressForm({
                   type="text"
                   {...addressForm.register('billingAddress.state')}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#274268] focus:border-transparent"
-                  placeholder="NY"
+                  placeholder="Uttarakhand"
                 />
                 {addressForm.formState.errors.billingAddress?.state && (
                   <p className="mt-1 text-sm text-red-600">{addressForm.formState.errors.billingAddress.state.message}</p>
@@ -71,7 +71,7 @@ export default function AddressForm({
                   type="text"
                   {...addressForm.register('billingAddress.zipCode')}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#274268] focus:border-transparent"
-                  placeholder="10001"
+                  placeholder="248001"
                 />
                 {addressForm.formState.errors.billingAddress?.zipCode && (
                   <p className="mt-1 text-sm text-red-600">{addressForm.formState.errors.billingAddress.zipCode.message}</p>
@@ -83,7 +83,7 @@ export default function AddressForm({
                   type="text"
                   {...addressForm.register('billingAddress.country')}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#274268] focus:border-transparent"
-                  placeholder="USA"
+                  placeholder="India"
                 />
                 {addressForm.formState.errors.billingAddress?.country && (
                   <p className="mt-1 text-sm text-red-600">{addressForm.formState.errors.billingAddress.country.message}</p>
@@ -129,7 +129,7 @@ export default function AddressForm({
                     type="text"
                     {...addressForm.register('shippingAddress.city')}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#274268] focus:border-transparent"
-                    placeholder="Brooklyn"
+                    placeholder="Roorkee"
                   />
                   {addressForm.formState.errors.shippingAddress?.city && (
                     <p className="mt-1 text-sm text-red-600">{addressForm.formState.errors.shippingAddress.city.message}</p>
@@ -141,7 +141,7 @@ export default function AddressForm({
                     type="text"
                     {...addressForm.register('shippingAddress.state')}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#274268] focus:border-transparent"
-                    placeholder="NY"
+                    placeholder="Uttarakhand"
                   />
                   {addressForm.formState.errors.shippingAddress?.state && (
                     <p className="mt-1 text-sm text-red-600">{addressForm.formState.errors.shippingAddress.state.message}</p>
@@ -156,7 +156,7 @@ export default function AddressForm({
                     type="text"
                     {...addressForm.register('shippingAddress.zipCode')}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#274268] focus:border-transparent"
-                    placeholder="11201"
+                    placeholder="247667"
                   />
                   {addressForm.formState.errors.shippingAddress?.zipCode && (
                     <p className="mt-1 text-sm text-red-600">{addressForm.formState.errors.shippingAddress.zipCode.message}</p>
@@ -168,7 +168,7 @@ export default function AddressForm({
                     type="text"
                     {...addressForm.register('shippingAddress.country')}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#274268] focus:border-transparent"
-                    placeholder="USA"
+                    placeholder="India"
                   />
                   {addressForm.formState.errors.shippingAddress?.country && (
                     <p className="mt-1 text-sm text-red-600">{addressForm.formState.errors.shippingAddress.country.message}</p>

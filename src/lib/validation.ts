@@ -5,7 +5,7 @@ const addressSchema = z.object({
   street: z.string().min(1, 'Street address is required'),
   city: z.string().min(1, 'City is required'),
   state: z.string().min(1, 'State is required'),
-  zipCode: z.string().min(1, 'ZIP code is required').regex(/^\d{5}(-\d{4})?$/, 'Invalid ZIP code format'),
+  zipCode: z.string().min(1, 'ZIP code is required').regex(/^\d{6}(-\d{4})?$/, 'Invalid ZIP code format'),
   country: z.string().min(1, 'Country is required')
 });
 
