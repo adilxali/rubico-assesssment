@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ChevronLeft, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { personalInfoSchema, addressInfoSchema, asyncEmailValidation, type PersonalInfoFormData, type AddressInfoFormData } from '../lib/validation';
 import { useStore } from '../store/useStore';
 import AddressForm from './steps/AddressForm';
