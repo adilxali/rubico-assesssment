@@ -9,12 +9,10 @@ interface AppState {
 
   loadCustomers: () => Promise<void>;
   addCustomer: (customer: Omit<Customer, 'id' | 'createdAt'>) => Promise<Customer>;
-  updateCustomer: (id: string, customer: Partial<Customer>) => Promise<void>;
   deleteCustomer: (id: string) => Promise<void>;
 
   loadInvoices: () => Promise<void>;
   addInvoice: (invoice: Omit<Invoice, 'id' | 'createdAt'>) => Promise<Invoice>;
-  updateInvoice: (id: string, invoice: Partial<Invoice>) => Promise<void>;
   deleteInvoice: (id: string) => Promise<void>;
 }
 
@@ -49,20 +47,7 @@ export const useStore = create<AppState>((set, get) => ({
     }
   },
 
-  updateCustomer: async (id, customerData) => {
-    set({ isLoading: true, error: null });
-    try {
-      const updated = await db.customers.update(id, customerData);
-      if (updated) {
-        set(state => ({
-          customers: state.customers.map(c => c.id === id ? updated : c),
-          isLoading: false
-        }));
-      }
-    } catch (error) {
-      set({ error: 'Failed to update customer', isLoading: false });
-    }
-  },
+
 
   deleteCustomer: async (id) => {
     set({ isLoading: true, error: null });
@@ -99,21 +84,6 @@ export const useStore = create<AppState>((set, get) => ({
     } catch (error) {
       set({ error: 'Failed to create invoice', isLoading: false });
       throw error;
-    }
-  },
-
-  updateInvoice: async (id, invoiceData) => {
-    set({ isLoading: true, error: null });
-    try {
-      const updated = await db.invoices.update(id, invoiceData);
-      if (updated) {
-        set(state => ({
-          invoices: state.invoices.map(inv => inv.id === id ? updated : inv),
-          isLoading: false
-        }));
-      }
-    } catch (error) {
-      set({ error: 'Failed to update invoice', isLoading: false });
     }
   },
 
