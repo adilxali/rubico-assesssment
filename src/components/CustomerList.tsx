@@ -1,38 +1,50 @@
-import { useState, useMemo } from 'react';
-import { Search, ChevronLeft, ChevronRight, UserPlus, Trash2, Mail, Phone, MapPin } from 'lucide-react';
-import { Customer } from '../lib/db';
-import { useStore } from '../store/useStore';
+import { useState, useMemo } from "react";
+import {
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  UserPlus,
+  Trash2,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
+import { Customer } from "../lib/db";
+import { useStore } from "../store/useStore";
 
 interface CustomerListProps {
   onCreateNew: () => void;
   onSelectCustomer?: (customer: Customer) => void;
 }
 
-type SortField = 'name' | 'email' | 'createdAt';
-type SortOrder = 'asc' | 'desc';
+type SortField = "name" | "email" | "createdAt";
+type SortOrder = "asc" | "desc";
 
 const sortButtons = [
-  { field: 'name', label: 'Name', activeClass: 'bg-[#274268] text-white' },
-  { field: 'email', label: 'Email', activeClass: 'bg-[#274268] text-white' },
-  { field: 'createdAt', label: 'Date', activeClass: 'bg-[#274268] text-white' },
+  { field: "name", label: "Name", activeClass: "bg-[#274268] text-white" },
+  { field: "email", label: "Email", activeClass: "bg-[#274268] text-white" },
+  { field: "createdAt", label: "Date", activeClass: "bg-[#274268] text-white" },
 ];
 
-export default function CustomerList({ onCreateNew, onSelectCustomer }: CustomerListProps) {
-  const customers = useStore(state => state.customers);
-  const deleteCustomer = useStore(state => state.deleteCustomer);
+export default function CustomerList({
+  onCreateNew,
+  onSelectCustomer,
+}: CustomerListProps) {
+  const customers = useStore((state) => state.customers);
+  const deleteCustomer = useStore((state) => state.deleteCustomer);
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortField, setSortField] = useState<SortField>('createdAt');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortField, setSortField] = useState<SortField>("createdAt");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   const filteredAndSortedCustomers = useMemo(() => {
     let filtered = customers;
 
     if (searchTerm) {
       filtered = customers.filter(
-        customer =>
+        (customer) =>
           customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
           customer.phone?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -42,19 +54,22 @@ export default function CustomerList({ onCreateNew, onSelectCustomer }: Customer
     return filtered.sort((a, b) => {
       let comparison = 0;
 
-      if (sortField === 'name') {
+      if (sortField === "name") {
         comparison = a.name.localeCompare(b.name);
-      } else if (sortField === 'email') {
+      } else if (sortField === "email") {
         comparison = a.email.localeCompare(b.email);
-      } else if (sortField === 'createdAt') {
-        comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      } else if (sortField === "createdAt") {
+        comparison =
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
       }
 
-      return sortOrder === 'asc' ? comparison : -comparison;
+      return sortOrder === "asc" ? comparison : -comparison;
     });
   }, [customers, searchTerm, sortField, sortOrder]);
 
-  const totalPages = Math.ceil(filteredAndSortedCustomers.length / itemsPerPage);
+  const totalPages = Math.ceil(
+    filteredAndSortedCustomers.length / itemsPerPage
+  );
   const paginatedCustomers = filteredAndSortedCustomers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -62,25 +77,25 @@ export default function CustomerList({ onCreateNew, onSelectCustomer }: Customer
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
       setSortField(field);
-      setSortOrder('asc');
+      setSortOrder("asc");
     }
     setCurrentPage(1);
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this customer?')) {
+    if (window.confirm("Are you sure you want to delete this customer?")) {
       await deleteCustomer(id);
     }
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -89,7 +104,9 @@ export default function CustomerList({ onCreateNew, onSelectCustomer }: Customer
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Customers</h2>
-          <p className="text-gray-600 mt-1">{filteredAndSortedCustomers.length} total customers</p>
+          <p className="text-gray-600 mt-1">
+            {filteredAndSortedCustomers.length} total customers
+          </p>
         </div>
         <button
           onClick={onCreateNew}
@@ -103,7 +120,10 @@ export default function CustomerList({ onCreateNew, onSelectCustomer }: Customer
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <Search
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              size={20}
+            />
             <input
               type="text"
               placeholder="Search by name, email, or phone..."
@@ -117,28 +137,46 @@ export default function CustomerList({ onCreateNew, onSelectCustomer }: Customer
           </div>
         </div>
 
-        <div className="mb-4 flex gap-2">
-          {sortButtons.map(({ field, label, activeClass }) => {
-            const isActive = sortField === field;
-            const baseClasses = 'px-4 py-2 rounded-lg font-medium transition-colors';
-            const inactiveClasses = 'bg-gray-100 text-gray-700 hover:bg-gray-200';
+        <div className="flex items-center justify-between">
+          <div className="mb-4 flex gap-2">
+            {sortButtons.map(({ field, label, activeClass }) => {
+              const isActive = sortField === field;
+              const baseClasses =
+                "px-4 py-2 rounded-lg font-medium transition-colors";
+              const inactiveClasses =
+                "bg-gray-100 text-gray-700 hover:bg-gray-200";
 
-            return (
-              <button
-                key={field}
-                onClick={() => handleSort(field as SortField)}
-                className={`${baseClasses} ${isActive ? activeClass : inactiveClasses}`}
-              >
-                {label} {isActive && (sortOrder === 'asc' ? '↑' : '↓')}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={field}
+                  onClick={() => handleSort(field as SortField)}
+                  className={`${baseClasses} ${
+                    isActive ? activeClass : inactiveClasses
+                  }`}
+                >
+                  {label} {isActive && (sortOrder === "asc" ? "↑" : "↓")}
+                </button>
+              );
+            })}
+          </div>
+          <div>
+            <select className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#274268] focus:border-transparent"
+            onChange={(e)=> setItemsPerPage(Number(e.target.value))} value={itemsPerPage}
+            >
+              <option value={1}>1</option>
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+            </select>
+          </div>
         </div>
 
         {paginatedCustomers.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">
-              {searchTerm ? 'No customers found matching your search.' : 'No customers yet. Create your first customer!'}
+              {searchTerm
+                ? "No customers found matching your search."
+                : "No customers yet. Create your first customer!"}
             </p>
           </div>
         ) : (
@@ -151,7 +189,9 @@ export default function CustomerList({ onCreateNew, onSelectCustomer }: Customer
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-800">{customer.name}</h3>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {customer.name}
+                    </h3>
                     <div className="mt-2 space-y-1">
                       <div className="flex items-center gap-2 text-gray-600">
                         <Mail size={16} />
@@ -166,7 +206,8 @@ export default function CustomerList({ onCreateNew, onSelectCustomer }: Customer
                       <div className="flex items-center gap-2 text-gray-600">
                         <MapPin size={16} />
                         <span className="text-sm">
-                          {customer.billingAddress.city}, {customer.billingAddress.state}
+                          {customer.billingAddress.city},{" "}
+                          {customer.billingAddress.state}
                         </span>
                       </div>
                     </div>
@@ -194,7 +235,7 @@ export default function CustomerList({ onCreateNew, onSelectCustomer }: Customer
         {totalPages > 1 && (
           <div className="mt-6 flex justify-between items-center">
             <button
-              onClick={() => setCurrentPage(page => Math.max(1, page - 1))}
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
               disabled={currentPage === 1}
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
@@ -205,7 +246,9 @@ export default function CustomerList({ onCreateNew, onSelectCustomer }: Customer
               Page {currentPage} of {totalPages}
             </span>
             <button
-              onClick={() => setCurrentPage(page => Math.min(totalPages, page + 1))}
+              onClick={() =>
+                setCurrentPage((page) => Math.min(totalPages, page + 1))
+              }
               disabled={currentPage === totalPages}
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >

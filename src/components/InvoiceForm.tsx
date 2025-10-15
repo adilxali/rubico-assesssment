@@ -1,10 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, Trash2, FileText } from 'lucide-react';
-import { invoiceSchema, type InvoiceFormData } from '../lib/validation';
-import { useStore } from '../store/useStore';
-import { Customer } from '../lib/db';
+import { useState, useEffect, useMemo } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus, Trash2, FileText } from "lucide-react";
+import { invoiceSchema, type InvoiceFormData } from "../lib/validation";
+import { useStore } from "../store/useStore";
+import { Customer } from "../lib/db";
 
 interface InvoiceFormProps {
   onSuccess: () => void;
@@ -12,17 +12,25 @@ interface InvoiceFormProps {
   preselectedCustomer?: Customer;
 }
 
-export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }: InvoiceFormProps) {
-  const customers = useStore(state => state.customers);
-  const addInvoice = useStore(state => state.addInvoice);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(preselectedCustomer || null);
+export default function InvoiceForm({
+  onSuccess,
+  onCancel,
+  preselectedCustomer,
+}: InvoiceFormProps) {
+  const customers = useStore((state) => state.customers);
+  const addInvoice = useStore((state) => state.addInvoice);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    preselectedCustomer || null
+  );
 
   const form = useForm<InvoiceFormData>({
     resolver: zodResolver(invoiceSchema),
     defaultValues: {
-      customerId: preselectedCustomer?.id || '',
-      invoiceDate: new Date().toISOString().split('T')[0],
-      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      customerId: preselectedCustomer?.id || "",
+      invoiceDate: new Date().toISOString().split("T")[0],
+      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0],
       items: [],
       taxRate: 0,
     },
@@ -30,7 +38,7 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: 'items',
+    name: "items",
   });
 
   useEffect(() => {
@@ -40,15 +48,15 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
   }, [preselectedCustomer]);
 
   const handleCustomerChange = (customerId: string) => {
-    const customer = customers.find(c => c.id === customerId);
+    const customer = customers.find((c) => c.id === customerId);
     setSelectedCustomer(customer || null);
-    form.setValue('customerId', customerId);
+    form.setValue("customerId", customerId);
   };
 
   const addItem = () => {
     append({
       id: crypto.randomUUID(),
-      name: '',
+      name: "",
       price: 0,
       quantity: 1,
       total: 0,
@@ -61,11 +69,18 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
     form.setValue(`items.${index}.total`, total, { shouldDirty: true });
   };
 
-  const watchedItems = form.watch('items');
-  const watchedTaxRate = form.watch('taxRate');
+  const watchedItems = JSON.stringify(form.watch("items"));
+  const watchedTaxRate = form.watch("taxRate");
 
   const totals = useMemo(() => {
-    const subtotal = watchedItems.reduce((sum, item) => sum + (item.total || 0), 0);
+    const subtotal = (
+      JSON.parse(watchedItems) as Array<{ price: number; quantity: number }>
+    ).reduce((sum, item) => {
+      const itemTotal = (item.price || 0) * (item.quantity || 0);
+      console.log(`Item total: ${itemTotal.toFixed(2)}`);
+      return sum + itemTotal;
+    }, 0);
+
     const taxAmount = subtotal * ((watchedTaxRate || 0) / 100);
     const total = subtotal + taxAmount;
     return { subtotal, taxAmount, total };
@@ -85,11 +100,11 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
         taxRate: data.taxRate,
         taxAmount: totals.taxAmount,
         total: totals.total,
-        status: 'draft',
+        status: "draft",
       });
       onSuccess();
     } catch (error) {
-      console.error('Failed to create invoice:', error);
+      console.error("Failed to create invoice:", error);
     }
   };
 
@@ -107,7 +122,7 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
               Customer *
             </label>
             <select
-              {...form.register('customerId')}
+              {...form.register("customerId")}
               onChange={(e) => handleCustomerChange(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
@@ -119,7 +134,9 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
               ))}
             </select>
             {form.formState.errors.customerId && (
-              <p className="mt-1 text-sm text-red-600">{form.formState.errors.customerId.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {form.formState.errors.customerId.message}
+              </p>
             )}
           </div>
 
@@ -130,12 +147,14 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
             <input
               type="number"
               step="0.01"
-              {...form.register('taxRate', { valueAsNumber: true })}
+              {...form.register("taxRate", { valueAsNumber: true })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="0.00"
             />
             {form.formState.errors.taxRate && (
-              <p className="mt-1 text-sm text-red-600">{form.formState.errors.taxRate.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {form.formState.errors.taxRate.message}
+              </p>
             )}
           </div>
 
@@ -145,11 +164,13 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
             </label>
             <input
               type="date"
-              {...form.register('invoiceDate')}
+              {...form.register("invoiceDate")}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             {form.formState.errors.invoiceDate && (
-              <p className="mt-1 text-sm text-red-600">{form.formState.errors.invoiceDate.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {form.formState.errors.invoiceDate.message}
+              </p>
             )}
           </div>
 
@@ -159,11 +180,13 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
             </label>
             <input
               type="date"
-              {...form.register('dueDate')}
+              {...form.register("dueDate")}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             {form.formState.errors.dueDate && (
-              <p className="mt-1 text-sm text-red-600">{form.formState.errors.dueDate.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {form.formState.errors.dueDate.message}
+              </p>
             )}
           </div>
         </div>
@@ -181,9 +204,12 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
             </button>
           </div>
 
-          {form.formState.errors.items && !Array.isArray(form.formState.errors.items) && (
-            <p className="mb-4 text-sm text-red-600">{form.formState.errors.items.message}</p>
-          )}
+          {form.formState.errors.items &&
+            !Array.isArray(form.formState.errors.items) && (
+              <p className="mb-4 text-sm text-red-600">
+                {form.formState.errors.items.message}
+              </p>
+            )}
 
           <div className="space-y-4">
             {fields.map((field, index) => (
@@ -213,8 +239,16 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
                     <input
                       type="number"
                       step="0.01"
-                      {...form.register(`items.${index}.price`, { valueAsNumber: true })}
-                      onChange={() => calculateItemTotal(index)}
+                      {...form.register(`items.${index}.price`, {
+                        valueAsNumber: true,
+                      })}
+                      onChange={(e) => {
+                        form.setValue(
+                          `items.${index}.price`,
+                          Number(e.target.value)
+                        );
+                        calculateItemTotal(index);
+                      }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                       placeholder="0.00"
                     />
@@ -231,8 +265,16 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
                     </label>
                     <input
                       type="number"
-                      {...form.register(`items.${index}.quantity`, { valueAsNumber: true })}
-                      onChange={() => calculateItemTotal(index)}
+                      {...form.register(`items.${index}.quantity`, {
+                        valueAsNumber: true,
+                      })}
+                      onChange={(e) => {
+                        form.setValue(
+                          `items.${index}.quantity`,
+                          Number(e.target.value)
+                        );
+                        calculateItemTotal(index);
+                      }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                       placeholder="1"
                     />
@@ -248,7 +290,8 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
                       Total
                     </label>
                     <div className="px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700">
-                      ${form.watch(`items.${index}.total`)?.toFixed(2) || '0.00'}
+                      $
+                      {form.watch(`items.${index}.total`)?.toFixed(2) || "0.00"}
                     </div>
                   </div>
 
@@ -271,15 +314,23 @@ export default function InvoiceForm({ onSuccess, onCancel, preselectedCustomer }
           <div className="max-w-sm ml-auto space-y-3">
             <div className="flex justify-between items-center text-gray-700">
               <span className="font-medium">Subtotal:</span>
-              <span className="text-lg font-semibold">${totals.subtotal.toFixed(2)}</span>
+              <span className="text-lg font-semibold">
+                ${totals.subtotal.toFixed(2)}
+              </span>
             </div>
             <div className="flex justify-between items-center text-gray-700">
-              <span className="font-medium">Tax ({form.watch('taxRate') || 0}%):</span>
-              <span className="text-lg font-semibold">${totals.taxAmount.toFixed(2)}</span>
+              <span className="font-medium">
+                Tax ({form.watch("taxRate") || 0}%):
+              </span>
+              <span className="text-lg font-semibold">
+                ${totals.taxAmount.toFixed(2)}
+              </span>
             </div>
             <div className="flex justify-between items-center text-gray-900 pt-3 border-t-2 border-gray-300">
               <span className="font-bold text-lg">Grand Total:</span>
-              <span className="text-2xl font-bold">${totals.total.toFixed(2)}</span>
+              <span className="text-2xl font-bold">
+                ${totals.total.toFixed(2)}
+              </span>
             </div>
           </div>
         </div>
